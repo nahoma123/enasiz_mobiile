@@ -16,6 +16,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.messenger.hfad.enasiz.sampledata.SendSMS;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -60,8 +62,10 @@ public class MainActivity extends AppCompatActivity
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-                bringData("/api/check","name");
+                Log.i("Milestone",jsonFind(bringData("/api/check","name"),"name"));
+
             }
+
         });
 
 
@@ -89,6 +93,8 @@ public class MainActivity extends AppCompatActivity
 
                         JSONObject obj = new JSONObject(response.toString());
                         Log.e("Take",obj.toString());
+                        SendSMS sms = new SendSMS();
+                        sms.sendSMSMessage("0912663978","Hello this is me");
                         return response.toString();
                     }else {
                         Log.e("Response", "Failure");
@@ -108,12 +114,13 @@ public class MainActivity extends AppCompatActivity
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
                 return "Error";
             }
 
-    public String jsonFind(StringBuilder name){
+    public String jsonFind(String json, String name){
         try {
-            JSONObject obj = new JSONObject(String.valueOf(name));
+            JSONObject obj = new JSONObject(String.valueOf(json));
             return obj.getString(String.valueOf(name));
 
         } catch (JSONException e) {
