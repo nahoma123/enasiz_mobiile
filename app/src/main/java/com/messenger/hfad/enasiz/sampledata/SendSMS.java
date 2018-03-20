@@ -29,12 +29,13 @@ public class SendSMS {
         mFragmentList = mSMSManager.divideMessage(aMessageText);
         int fragmentCount = mFragmentList.size();
         if (fragmentCount > 1) {
-            Log.d(TAG, "Sending " + fragmentCount + " parts");
+            Log.e(TAG, "Sending " + fragmentCount + " parts");
             mSMSManager.sendMultipartTextMessage(aDestinationAddress,
                     mServiceCentreAddr,
                     mFragmentList, null, null);
         } else {
-            Log.d(TAG, "Sending one part");
+            Log.e(TAG, "Sending one part");
+
             mSMSManager.sendTextMessage(aDestinationAddress,
                     mServiceCentreAddr,
                     aMessageText, null, null);
