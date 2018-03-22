@@ -26,6 +26,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.messenger.hfad.enasiz.sampledata.JsonHandler;
 import com.messenger.hfad.enasiz.sampledata.SendSMS;
 
 import org.json.JSONException;
@@ -87,73 +88,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-                Log.i("Milestone", jsonFind(bringData("/api/check", "name"), "name"));
+                JsonHandler jh = new JsonHandler();
+                Log.i("Milestone", jh.jsonFind(jh.bringData("/api/check"), "name"));
             }
         });
 
     }
-
-    public String bringData(final String uri, final String name){
-        Log.e("Check", "Inside");
-
-                try {
-
-                    URL localAddress = new URL("http://10.0.2.2:8000"+uri);
-                    HttpURLConnection myConnection =
-                            (HttpURLConnection) localAddress.openConnection();
-
-                    if (myConnection.getResponseCode() == 200) {
-//                        Log.e("Response", obj.getString("name"));
-                        BufferedReader in = new BufferedReader( new InputStreamReader(myConnection.getInputStream()));
-                        StringBuilder response = new StringBuilder();
-                        String currentLine;
-
-                        while ((currentLine = in.readLine()) != null)
-                            response.append(currentLine);
-
-                        in.close();
-
-
-                        JSONObject obj = new JSONObject(response.toString());
-                        Log.e("Take",obj.toString());
-                        SendSMS sms = new SendSMS();
-                        sms.sendSMSMessage("0912663978","Hello this is me");
-                        return response.toString();
-                    }else {
-                        Log.e("Response", "Failure");
-                    }
-
-//                    InputStream responseBody = myConnection.getInputStream();
-//                    InputStreamReader responseBodyReader =
-//                            new InputStreamReader(responseBody, "UTF-8");
-                   // JsonReader jsonReader = new JsonReader(responseBodyReader);
-//                    jsonReader.beginObject();
-
-                  //  jsonReader.beginArray();
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                return "Error";
-            }
-
-    public String jsonFind(String json, String name){
-        try {
-            JSONObject obj = new JSONObject(String.valueOf(json));
-            return obj.getString(String.valueOf(name));
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return "";
-    }
-
-
 
     @Override
     public void onBackPressed() {
