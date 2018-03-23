@@ -1,7 +1,9 @@
 package com.messenger.hfad.enasiz.sampledata;
 
+import android.util.JsonReader;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -9,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -18,7 +21,7 @@ import java.net.URL;
 
 public class JsonHandler {
 
-    public String bringData(final String uri){
+    public String bringData(final String uri)  {
         Log.e("Check", "Inside");
 
         try {
@@ -26,7 +29,7 @@ public class JsonHandler {
             URL localAddress = new URL("http://10.0.2.2:8000"+uri);
             HttpURLConnection myConnection =
                     (HttpURLConnection) localAddress.openConnection();
-
+            Log.i("Conn stat",myConnection.getResponseCode()+"");
             if (myConnection.getResponseCode() == 200) {
 //                        Log.e("Response", obj.getString("name"));
                 BufferedReader in = new BufferedReader( new InputStreamReader(myConnection.getInputStream()));
@@ -39,8 +42,8 @@ public class JsonHandler {
                 in.close();
 
 
-                JSONObject obj = new JSONObject(response.toString());
-                Log.e("Take",obj.toString());
+
+//                Log.e("Take",obj.toString());
 
                 return response.toString();
             }else {
@@ -58,17 +61,37 @@ public class JsonHandler {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+
+        return "no try";
+    }
+    public JSONObject jsonArrayFind(String json, int index){
+        try{
+            JSONArray jsonArray = new JSONArray();
+
+            return jsonArray.getJSONObject(index);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return new JSONObject();
+    }
+
+    public String jsonStringFind(String json, String name){
+        try {
+            JSONObject obj = new JSONObject(String.valueOf(json));
+            return obj.getString(String.valueOf(name));
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        return "Error";
+        return "";
     }
-
-    public String jsonFind(String json, String name){
+    public String jsonStringFind(JSONObject json, String name){
         try {
-            JSONObject obj = new JSONObject(String.valueOf(json));
-            return obj.getString(String.valueOf(name));
+
+            return json.getString(String.valueOf(name));
 
         } catch (JSONException e) {
             e.printStackTrace();

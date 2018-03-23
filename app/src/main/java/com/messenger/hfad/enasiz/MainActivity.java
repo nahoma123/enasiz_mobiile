@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.messenger.hfad.enasiz.sampledata.JsonHandler;
 import com.messenger.hfad.enasiz.sampledata.SendSMS;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -86,14 +87,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ItemAdapter itemAdapter = new ItemAdapter(this,items,prices,description);
         myListView.setAdapter(itemAdapter);
         AsyncTask.execute(new Runnable() {
+
             @Override
             public void run() {
                 JsonHandler jh = new JsonHandler();
-                Log.i("Milestone", jh.jsonFind(jh.bringData("/api/check"), "name"));
+                Log.e("Data__",(jh.jsonArrayFind(jh.bringData("/api/check"),1)).toString());
+                Log.e("Milestone", jh.jsonStringFind(jh.jsonArrayFind(jh.bringData("/api/check"),0),"name"));
             }
         });
-
     }
+
 
     @Override
     public void onBackPressed() {
