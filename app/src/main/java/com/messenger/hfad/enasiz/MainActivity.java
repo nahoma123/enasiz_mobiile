@@ -1,6 +1,7 @@
 package com.messenger.hfad.enasiz;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -22,10 +23,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Adapter;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.messenger.hfad.enasiz.sampledata.AppController;
+import com.messenger.hfad.enasiz.sampledata.Item;
+import com.messenger.hfad.enasiz.sampledata.ItemAdapter;
 import com.messenger.hfad.enasiz.sampledata.JsonHandler;
 import com.messenger.hfad.enasiz.sampledata.SendSMS;
 
@@ -41,18 +51,24 @@ import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    ListView myListView;
-    String[] items;
-    String[] prices;
-    String[] description;
+    private static final String url="https://api.androidhive.info/json/movies.json";
+//    private static final String url="http://10.0.2.2:8000/api/matches/showall";
+    private ProgressDialog dialog;
+    private List<Item> array = new ArrayList<Item>();
+    private ListView listView;
+    private ItemAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -77,26 +93,75 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //      sms.sendSMSMessage("0912663978","Sending message");
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        listView = findViewById(R.id.myListView);
+        adapter = new ItemAdapter(this, array);
+        listView.setAdapter( adapter);
 
-        Resources res = getResources();
-        myListView = (ListView) findViewById(R.id.myListView);
-        items = res.getStringArray(R.array.items);
-        prices = res.getStringArray(R.array.prices);
-        description = res.getStringArray(R.array.description);
+        dialog = new ProgressDialog(this);
+        dialog.setMessage("Loading ....");
 
-        ItemAdapter itemAdapter = new ItemAdapter(this,items,prices,description);
-        myListView.setAdapter(itemAdapter);
-        AsyncTask.execute(new Runnable() {
+        dialog.show();
 
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
             @Override
-            public void run() {
-                JsonHandler jh = new JsonHandler();
-                Log.e("Data__",(jh.jsonArrayFind(jh.bringData("/api/check"),1)).toString());
-                Log.e("Milestone", jh.jsonStringFind(jh.jsonArrayFind(jh.bringData("/api/check"),0),"name"));
+            public void onResponse(JSONArray response) {
+
+                hideDialog();
+                // parsing json
+                for(int i=0;i<response.length();i++){
+                    try{
+
+                        JSONObject obj = response.getJSONObject(i);
+                        Item item = new Item();
+
+                        item.setTitle("Arsenal Vs Manchester");
+
+                        // genre is json array
+
+//                        JSONArray genreArray = obj.getJSONArray("genre");
+//                        ArrayList<String> genre = new ArrayList<String>();
+//                        for(int j=0;j<genreArray.length();j++){
+//                            genre.add((String) genreArray.get(j));
+//                        }
+//
+//                        item.setGenre(genre);
+                        array.add(item);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                adapter.notifyDataSetChanged();
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
             }
         });
+        AppController.getmInstance().addToRequestQueue(jsonArrayRequest);
+//        ItemAdapter itemAdapter = new ItemAdapter(this,items,prices,description);
+//        myListView.setAdapter(itemAdapter);
+//        AsyncTask.execute(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//                JsonHandler jh = new JsonHandler();
+//                Log.e("Data__",(jh.jsonArrayFind(jh.bringData("/api/check"),1)).toString());
+//                Log.e("Milestone", jh.jsonStringFind(jh.jsonArrayFind(jh.bringData("/api/check"),0),"name"));
+//            }
+//        });
     }
 
+    public void hideDialog() {
+      if(dialog!=null){
+          dialog.dismiss();
+          dialog = null;
+      }
+    }
 
     @Override
     public void onBackPressed() {
