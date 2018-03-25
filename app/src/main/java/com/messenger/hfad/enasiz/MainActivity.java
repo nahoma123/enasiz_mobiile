@@ -4,16 +4,14 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.util.JsonReader;
 import android.util.Log;
+import android.view.MenuInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -23,12 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Adapter;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -36,25 +29,13 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.messenger.hfad.enasiz.sampledata.AppController;
 import com.messenger.hfad.enasiz.sampledata.Item;
 import com.messenger.hfad.enasiz.sampledata.ItemAdapter;
-import com.messenger.hfad.enasiz.sampledata.JsonHandler;
-import com.messenger.hfad.enasiz.sampledata.SendSMS;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Array;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.net.ssl.HttpsURLConnection;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -83,11 +64,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+
+        //send806(888,888);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
 
 //      SendSMS sms = new SendSMS();
 //      sms.sendSMSMessage("0912663978","Sending message");
@@ -96,6 +80,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         listView = findViewById(R.id.myListView);
         adapter = new ItemAdapter(this, array);
         listView.setAdapter( adapter);
+        MenuItem recharge;
+        recharge = (MenuItem) findViewById(R.id.nav_gallery);
+
+
 
         dialog = new ProgressDialog(this);
         dialog.setMessage("Loading ....");
@@ -114,19 +102,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         JSONObject obj = response.getJSONObject(i);
                         Item item = new Item();
 
-                        item.setTitle("Arsenal Vs Manchester");
+//                      item.setTitle("Arsenal Vs Manchester");
 
                         // genre is json array
 
-//                        JSONArray genreArray = obj.getJSONArray("genre");
-//                        ArrayList<String> genre = new ArrayList<String>();
-//                        for(int j=0;j<genreArray.length();j++){
-//                            genre.add((String) genreArray.get(j));
-//                        }
-//
-//                        item.setGenre(genre);
+                        JSONArray genreArray = obj.getJSONArray("genre");
+                        ArrayList<String> genre = new ArrayList<String>();
+                        for(int j=0;j<genreArray.length();j++){
+                            genre.add((String) genreArray.get(j));
+                        }
+item.setTitle(obj.getString("title"));
+item.setThumbnailUrl(obj.getString("image"));
+item.setRating(((Number) obj.get("rating")).doubleValue());
+                        item.setGenre(genre);
                         array.add(item);
-
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -142,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             }
         });
-        AppController.getmInstance().addToRequestQueue(jsonArrayRequest);
+        AppController.getInstance().addToRequestQueue(jsonArrayRequest);
 //        ItemAdapter itemAdapter = new ItemAdapter(this,items,prices,description);
 //        myListView.setAdapter(itemAdapter);
 //        AsyncTask.execute(new Runnable() {
@@ -163,6 +152,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
       }
     }
 
+
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -176,8 +167,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
         return true;
+
     }
 
     @Override
@@ -191,6 +185,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.action_settings) {
             return true;
         }
+        if(id == R.id.recharge){
+            send806(888,888);
+        }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -209,21 +207,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         } else if (id == R.id.nav_manage) {
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-
-}
-
-class RechargeThoughPhone extends MainActivity{
     public void send806(int phoneNumber , int amount ){
         if(isPermissionGranted()){
             call_action();
@@ -273,6 +262,12 @@ class RechargeThoughPhone extends MainActivity{
             // other 'case' lines to check for other
             // permissions this app might request
         }
+
+
+}
+
+class RechargeThoughPhone extends MainActivity{
+
     }
 
 }

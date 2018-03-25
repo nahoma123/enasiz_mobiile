@@ -2,30 +2,38 @@ package com.messenger.hfad.enasiz.sampledata;
 
 import java.util.ArrayList;
 
-/**
- * Created by Nahom on 2018-03-23.
- */
-// Model for the incomming json data
 public class Item {
-    public String title,image;
-    public int year;
-    public double rate;
+    private String title, thumbnailUrl;
+    private int year;
+    private double rating;
     private ArrayList<String> genre;
+
+    public Item() {
+    }
+
+    public Item(String name, String thumbnailUrl, int year, double rating,
+                 ArrayList<String> genre) {
+        this.title = name;
+        this.thumbnailUrl = thumbnailUrl;
+        this.year = year;
+        this.rating = rating;
+        this.genre = genre;
+    }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setTitle(String name) {
+        this.title = name;
     }
 
-    public String getImage() {
-        return image;
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
     }
 
     public int getYear() {
@@ -36,12 +44,12 @@ public class Item {
         this.year = year;
     }
 
-    public double getRate() {
-        return rate;
+    public double getRating() {
+        return rating;
     }
 
-    public void setRate(double rate) {
-        this.rate = rate;
+    public void setRating(double rating) {
+        this.rating = rating;
     }
 
     public ArrayList<String> getGenre() {
@@ -51,4 +59,5 @@ public class Item {
     public void setGenre(ArrayList<String> genre) {
         this.genre = genre;
     }
+
 }

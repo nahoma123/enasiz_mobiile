@@ -9,9 +9,12 @@
             android:icon="@drawable/ic_menu_camera"
             android:title="Home"/>
         <item
+
             android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Recharge Account"/>
+            android:title="Recharge Account"
+
+            />
         <item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"
