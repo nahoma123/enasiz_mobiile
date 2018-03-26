@@ -7,4 +7,6 @@
     <color name="click_end_color">#ffeb38</color>
     <color name="click_end_color_bg">#4caf50</color>
     <color name="click_start_color_bg">#4caf50</color>
+    <color name="red">#fc0800</color>
+
 </resources>

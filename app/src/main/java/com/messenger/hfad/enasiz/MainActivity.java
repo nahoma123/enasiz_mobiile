@@ -40,8 +40,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String url="https://api.androidhive.info/json/movies.json";
-//    private static final String url="http://10.0.2.2:8000/api/matches/showall";
+//    private static final String url="https://api.androidhive.info/json/movies.json";
+    private static final String url="http://10.0.2.2:8000/api/matches/showall";
     private ProgressDialog dialog;
     private List<Item> array = new ArrayList<Item>();
     private ListView listView;
