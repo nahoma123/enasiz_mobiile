@@ -10,7 +10,7 @@
         <item>Tomato</item>
         <item>Squash</item>
     </string-array>
-    
+
     <string-array name="prices">
         <item>0.99</item>
         <item>1.56</item>
@@ -22,4 +22,5 @@
         <item>Fresh tomatos</item>
         <item>Fresh squash</item>
     </string-array>
+    <string name="title_activity_main2">Main2Activity</string>
 </resources>
